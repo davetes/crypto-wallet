@@ -30,9 +30,12 @@ function App() {
     }
   }, []);
 
+  const [newWalletPrivateKey, setNewWalletPrivateKey] = useState(null);
+
   const createWallet = async () => {
     setLoading(true);
     setError(null);
+    setNewWalletPrivateKey(null);
     try {
       const response = await fetch(`${API_BASE_URL}/api/wallet/create`, {
         method: 'POST',
@@ -42,8 +45,17 @@ function App() {
       });
       const data = await response.json();
       if (data.success) {
-        setWallet(data.wallet);
-        localStorage.setItem('cryptoWallet', JSON.stringify(data.wallet));
+        // Store wallet without private key in localStorage
+        const walletToStore = { ...data.wallet };
+        const privateKey = walletToStore.privateKey;
+        delete walletToStore.privateKey; // Remove private key before storing
+        
+        setWallet(walletToStore);
+        localStorage.setItem('cryptoWallet', JSON.stringify(walletToStore));
+        
+        // Store private key separately in state (will be shown once)
+        setNewWalletPrivateKey(privateKey);
+        
         await fetchBalance(data.wallet.address);
         await fetchTransactions(data.wallet.address);
       } else {
@@ -124,6 +136,8 @@ function App() {
             createWallet={createWallet}
             loading={loading}
             error={error}
+            newWalletPrivateKey={newWalletPrivateKey}
+            setNewWalletPrivateKey={setNewWalletPrivateKey}
           />
         ) : (
           <WalletDashboard
@@ -134,6 +148,8 @@ function App() {
             refreshData={refreshData}
             disconnectWallet={disconnectWallet}
             API_BASE_URL={API_BASE_URL}
+            newWalletPrivateKey={newWalletPrivateKey}
+            setNewWalletPrivateKey={setNewWalletPrivateKey}
           />
         )}
       </div>

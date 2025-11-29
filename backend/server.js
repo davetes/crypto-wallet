@@ -97,6 +97,7 @@ app.post('/api/wallet/create', (req, res) => {
       wallet: {
         address: wallet.address,
         publicKey: wallet.publicKey,
+        privateKey: wallet.privateKey, // Return private key ONCE for user to save
         createdAt: walletData.createdAt
       }
     });
