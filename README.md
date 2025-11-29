@@ -46,12 +46,16 @@ cd backend
 npm install
 ```
 
-3. Create a `.env` file (copy from `.env.example`):
+3. Create a `.env` file (copy from `env.example`):
 ```bash
 PORT=5000
-RPC_URL=https://eth.llamarpc.com
+# Optional: Custom RPC URL (recommended for production)
+# RPC_URL=https://mainnet.infura.io/v3/YOUR_PROJECT_ID
+# Or: RPC_URL=https://eth-mainnet.g.alchemy.com/v2/YOUR_API_KEY
 ENCRYPTION_KEY=your-32-byte-hex-encryption-key-here
 ```
+
+**Note:** The application includes automatic RPC endpoint fallback. If one endpoint fails (e.g., blocked by Cloudflare), it will automatically try alternative public endpoints. For production use, it's recommended to use your own RPC provider (Infura, Alchemy, etc.).
 
 4. Generate an encryption key (optional, for production):
 ```bash
@@ -140,7 +144,10 @@ The frontend will run on `http://localhost:3000`
    - Store encryption keys securely
    - Implement rate limiting
 
-4. **RPC Endpoints**: The default RPC endpoint is public. For production, use your own Infura, Alchemy, or other RPC provider.
+4. **RPC Endpoints**: The application includes automatic fallback to multiple public RPC endpoints. If you encounter 403 errors or rate limits, the app will automatically try alternative endpoints. For production, it's highly recommended to use your own RPC provider:
+   - **Infura**: Sign up at https://infura.io and get a free API key
+   - **Alchemy**: Sign up at https://alchemy.com and get a free API key
+   - Add your RPC URL to the `.env` file as `RPC_URL`
 
 ## API Endpoints
 
