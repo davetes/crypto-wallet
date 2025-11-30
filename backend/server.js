@@ -17,6 +17,9 @@ const wallets = new Map();
 // Encryption utilities
 const algorithm = 'aes-256-cbc';
 const secretKey = process.env.ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex');
+const keyBuffer = /^[0-9a-fA-F]{64}$/.test(secretKey)
+  ? Buffer.from(secretKey, 'hex')
+  : crypto.createHash('sha256').update(secretKey).digest();
 
 // RPC endpoints with fallback
 const RPC_ENDPOINTS = [
@@ -61,7 +64,7 @@ async function createProvider() {
 
 function encrypt(text) {
   const iv = crypto.randomBytes(16);
-  const cipher = crypto.createCipheriv(algorithm, Buffer.from(secretKey.slice(0, 32), 'hex'), iv);
+  const cipher = crypto.createCipheriv(algorithm, keyBuffer, iv);
   let encrypted = cipher.update(text);
   encrypted = Buffer.concat([encrypted, cipher.final()]);
   return iv.toString('hex') + ':' + encrypted.toString('hex');
@@ -71,7 +74,7 @@ function decrypt(text) {
   const textParts = text.split(':');
   const iv = Buffer.from(textParts.shift(), 'hex');
   const encryptedText = Buffer.from(textParts.join(':'), 'hex');
-  const decipher = crypto.createDecipheriv(algorithm, Buffer.from(secretKey.slice(0, 32), 'hex'), iv);
+  const decipher = crypto.createDecipheriv(algorithm, keyBuffer, iv);
   let decrypted = decipher.update(encryptedText);
   decrypted = Buffer.concat([decrypted, decipher.final()]);
   return decrypted.toString();
@@ -102,6 +105,7 @@ app.post('/api/wallet/create', (req, res) => {
       }
     });
   } catch (error) {
+    
     res.status(500).json({ success: false, error: error.message });
   }
 });
