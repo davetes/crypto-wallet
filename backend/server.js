@@ -90,6 +90,7 @@ app.post('/api/wallet/create', (req, res) => {
       address: wallet.address,
       privateKey: encrypt(wallet.privateKey),
       publicKey: wallet.publicKey,
+      mnemonic: wallet.mnemonic && wallet.mnemonic.phrase ? encrypt(wallet.mnemonic.phrase) : null,
       createdAt: new Date().toISOString()
     };
     
@@ -101,6 +102,7 @@ app.post('/api/wallet/create', (req, res) => {
         address: wallet.address,
         publicKey: wallet.publicKey,
         privateKey: wallet.privateKey, // Return private key ONCE for user to save
+        mnemonicPhrase: wallet.mnemonic && wallet.mnemonic.phrase ? wallet.mnemonic.phrase : null, // Return mnemonic ONCE
         createdAt: walletData.createdAt
       }
     });

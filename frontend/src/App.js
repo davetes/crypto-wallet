@@ -31,11 +31,13 @@ function App() {
   }, []);
 
   const [newWalletPrivateKey, setNewWalletPrivateKey] = useState(null);
+  const [newWalletMnemonic, setNewWalletMnemonic] = useState(null);
 
   const createWallet = async () => {
     setLoading(true);
     setError(null);
     setNewWalletPrivateKey(null);
+    setNewWalletMnemonic(null);
     try {
       const response = await fetch(`${API_BASE_URL}/api/wallet/create`, {
         method: 'POST',
@@ -48,13 +50,17 @@ function App() {
         // Store wallet without private key in localStorage
         const walletToStore = { ...data.wallet };
         const privateKey = walletToStore.privateKey;
+        const mnemonicPhrase = walletToStore.mnemonicPhrase;
         delete walletToStore.privateKey; // Remove private key before storing
+        delete walletToStore.mnemonicPhrase; // Remove mnemonic before storing
         
         setWallet(walletToStore);
         localStorage.setItem('cryptoWallet', JSON.stringify(walletToStore));
         
         // Store private key separately in state (will be shown once)
         setNewWalletPrivateKey(privateKey);
+        // Store mnemonic phrase separately in state (will be shown once)
+        setNewWalletMnemonic(mnemonicPhrase);
         
         await fetchBalance(data.wallet.address);
         await fetchTransactions(data.wallet.address);
@@ -131,13 +137,15 @@ function App() {
           setTransactions={setTransactions}
         />
 
-        {!wallet && !metamaskConnected ? (
+        {(!wallet || newWalletPrivateKey || newWalletMnemonic) && !metamaskConnected ? (
           <WalletCreation
             createWallet={createWallet}
             loading={loading}
             error={error}
             newWalletPrivateKey={newWalletPrivateKey}
             setNewWalletPrivateKey={setNewWalletPrivateKey}
+            newWalletMnemonic={newWalletMnemonic}
+            setNewWalletMnemonic={setNewWalletMnemonic}
           />
         ) : (
           <WalletDashboard

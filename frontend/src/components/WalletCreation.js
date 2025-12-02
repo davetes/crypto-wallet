@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 
-const WalletCreation = ({ createWallet, loading, error, newWalletPrivateKey, setNewWalletPrivateKey }) => {
+const WalletCreation = ({ createWallet, loading, error, newWalletPrivateKey, setNewWalletPrivateKey, newWalletMnemonic, setNewWalletMnemonic }) => {
   const [showPrivateKey, setShowPrivateKey] = useState(false);
   const [privateKeyCopied, setPrivateKeyCopied] = useState(false);
+  const [showMnemonic, setShowMnemonic] = useState(true);
+  const [mnemonicCopied, setMnemonicCopied] = useState(false);
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -11,9 +13,18 @@ const WalletCreation = ({ createWallet, loading, error, newWalletPrivateKey, set
     });
   };
 
+  const copyMnemonicToClipboard = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setMnemonicCopied(true);
+      setTimeout(() => setMnemonicCopied(false), 2000);
+    });
+  };
+
   const handleAcknowledge = () => {
     setNewWalletPrivateKey(null);
     setShowPrivateKey(false);
+    setNewWalletMnemonic(null);
+    setShowMnemonic(false);
   };
 
   return (
@@ -25,7 +36,7 @@ const WalletCreation = ({ createWallet, loading, error, newWalletPrivateKey, set
       
       {error && <div className="error-message">{error}</div>}
       
-      {newWalletPrivateKey ? (
+      {newWalletPrivateKey || newWalletMnemonic ? (
         <div style={{ marginBottom: '20px' }}>
           <div style={{ 
             padding: '20px', 
@@ -58,7 +69,7 @@ const WalletCreation = ({ createWallet, loading, error, newWalletPrivateKey, set
                     borderRadius: '4px',
                     cursor: 'pointer'
                   }}
-                >
+                > 
                   {showPrivateKey ? 'Hide' : 'Show'}
                 </button>
                 <button
@@ -93,13 +104,73 @@ const WalletCreation = ({ createWallet, loading, error, newWalletPrivateKey, set
                 {showPrivateKey ? newWalletPrivateKey : '•'.repeat(66)}
               </div>
             </div>
+
+            {newWalletMnemonic && (
+              <div style={{ marginBottom: '15px' }}>
+                <h3 style={{ color: '#856404', marginBottom: '10px', fontSize: '1.1rem' }}>
+                  🔑 Save Your Seed Phrase (Mnemonic)
+                </h3>
+                <p style={{ color: '#856404', marginBottom: '10px', fontSize: '0.95rem' }}>
+                  This 12/24-word phrase can fully restore your wallet. <strong>Never share it.</strong> This is the only time it will be displayed.
+                </p>
+                <label style={{ display: 'block', marginBottom: '8px', color: '#856404', fontWeight: '600' }}>
+                  Mnemonic Phrase:
+                  <button
+                    type="button"
+                    onClick={() => setShowMnemonic(!showMnemonic)}
+                    style={{
+                      marginLeft: '10px',
+                      padding: '5px 10px',
+                      fontSize: '0.8rem',
+                      background: '#856404',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {showMnemonic ? 'Hide' : 'Show'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => copyMnemonicToClipboard(newWalletMnemonic)}
+                    style={{
+                      marginLeft: '10px',
+                      padding: '5px 10px',
+                      fontSize: '0.8rem',
+                      background: '#856404',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {mnemonicCopied ? '✓ Copied!' : 'Copy'}
+                  </button>
+                </label>
+                <div style={{
+                  background: '#fff',
+                  padding: '15px',
+                  borderRadius: '8px',
+                  border: '1px solid #ffc107',
+                  fontFamily: 'Courier New, monospace',
+                  wordBreak: 'break-word',
+                  fontSize: '0.95rem',
+                  color: showMnemonic ? '#333' : 'transparent',
+                  textShadow: showMnemonic ? 'none' : '0 0 8px rgba(0,0,0,0.5)',
+                  userSelect: 'all'
+                }}>
+                  {showMnemonic ? newWalletMnemonic : '•'.repeat(newWalletMnemonic.length)}
+                </div>
+              </div>
+            )}
             
             <button
               className="btn btn-primary"
               onClick={handleAcknowledge}
               style={{ width: '100%' }}
             >
-              I've Saved My Private Key - Continue
+              I've Saved My Keys - Continue
             </button>
           </div>
         </div>
@@ -118,6 +189,7 @@ const WalletCreation = ({ createWallet, loading, error, newWalletPrivateKey, set
             <h3 style={{ marginBottom: '10px', fontSize: '1rem' }}>⚠️ Security Notice</h3>
             <ul style={{ paddingLeft: '20px', color: '#666', fontSize: '0.9rem' }}>
               <li>Your private key will be shown once after wallet creation</li>
+              <li>Your mnemonic phrase will be shown once after wallet creation</li>
               <li>Save it securely - you'll need it to send transactions</li>
               <li>Never share your private key with anyone</li>
               <li>This is a demo wallet - use test networks for development</li>

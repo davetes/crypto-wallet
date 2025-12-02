@@ -7,7 +7,12 @@
   text-align: center;
   color: white;
   margin-bottom: 40px;
-  padding: 20px;
+  padding: 24px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(8px);
 }
 
 .App-header h1 {
@@ -27,16 +32,19 @@
 }
 
 .card {
-  background: white;
-  border-radius: 15px;
-  padding: 30px;
-  margin-bottom: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease;
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 22px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: saturate(140%) blur(6px);
 }
 
 .card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-4px);
+  box-shadow: 0 26px 50px rgba(0, 0, 0, 0.22);
 }
 
 .card-title {
@@ -54,10 +62,11 @@
   border-radius: 8px;
   font-size: 1rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, opacity 0.2s ease;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
 .btn-primary {
@@ -66,8 +75,8 @@
 }
 
 .btn-primary:hover {
-  transform: scale(1.05);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(102, 126, 234, 0.45);
 }
 
 .btn-secondary {
@@ -77,7 +86,8 @@
 
 .btn-secondary:hover {
   background: #5a6268;
-  transform: scale(1.05);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(92, 99, 106, 0.35);
 }
 
 .btn-danger {
@@ -87,13 +97,15 @@
 
 .btn-danger:hover {
   background: #c82333;
-  transform: scale(1.05);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(220, 53, 69, 0.35);
 }
 
 .btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
+  box-shadow: none;
 }
 
 .input-group {
@@ -113,22 +125,24 @@
   border: 2px solid #e0e0e0;
   border-radius: 8px;
   font-size: 1rem;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .input-group input:focus {
   outline: none;
   border-color: #667eea;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
 }
 
 .address-display {
-  background: #f8f9fa;
+  background: rgba(248, 249, 250, 0.9);
   padding: 15px;
   border-radius: 8px;
   word-break: break-all;
   font-family: 'Courier New', monospace;
   margin: 10px 0;
-  border: 2px solid #e0e0e0;
+  border: 2px solid rgba(224, 224, 224, 0.9);
 }
 
 .balance-display {
@@ -138,6 +152,7 @@
   border-radius: 15px;
   color: white;
   margin-bottom: 20px;
+  box-shadow: 0 16px 40px rgba(118, 75, 162, 0.35);
 }
 
 .balance-display h2 {
@@ -157,6 +172,7 @@
   border-radius: 8px;
   margin: 15px 0;
   border: 1px solid #f5c6cb;
+  box-shadow: 0 8px 18px rgba(220, 53, 69, 0.15);
 }
 
 .success-message {
@@ -166,6 +182,7 @@
   border-radius: 8px;
   margin: 15px 0;
   border: 1px solid #c3e6cb;
+  box-shadow: 0 8px 18px rgba(40, 167, 69, 0.15);
 }
 
 .loading {
@@ -178,6 +195,7 @@
 .transactions-list {
   max-height: 400px;
   overflow-y: auto;
+  padding-right: 6px;
 }
 
 .transaction-item {
@@ -186,6 +204,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: background 0.2s ease;
 }
 
 .transaction-item:last-child {
@@ -219,13 +238,34 @@
   flex-wrap: wrap;
 }
 
+/* Subtle hover for rows */
+.transactions-list .transaction-item:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+/* Nicer scrollbars (WebKit) */
+.transactions-list::-webkit-scrollbar {
+  width: 10px;
+}
+.transactions-list::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.05);
+  border-radius: 10px;
+}
+.transactions-list::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.2);
+  border-radius: 10px;
+}
+.transactions-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(0,0,0,0.3);
+}
+
 @media (max-width: 768px) {
   .App-header h1 {
     font-size: 2rem;
   }
 
   .card {
-    padding: 20px;
+    padding: 22px;
   }
 
   .balance-display h2 {
